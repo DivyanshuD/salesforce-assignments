@@ -1,0 +1,14 @@
+public class ClassStudentMapService {
+    public static Map<Id,Set<Id>> getMapOfClassStudentSet(){
+        Map<Id,Set<Id>> MapOfClassStudentSetId = new Map<Id,Set<Id>>();
+        for(Student__c student :[SELECT Id,Class__r.Id  FROM Student__c]){
+            if(MapOfClassStudentSetId.get(student.Class__r.Id)==null){
+                MapOfClassStudentSetId.put(student.Class__r.Id, new Set<Id>());
+            }
+             Set<Id> SetOfStudentId = MapOfClassStudentSetId.get(student.Class__r.Id);
+             SetOfStudentId.add(student.Id);
+             MapOfClassStudentSetId.put(student.Class__r.Id,SetOfStudentId); 
+        }
+        return MapOfClassStudentSetId;
+    }
+}

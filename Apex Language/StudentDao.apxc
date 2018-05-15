@@ -1,0 +1,5 @@
+public class StudentDao {
+    public static List<Student__c> getStudentNameListOfClass(Id ClassId){
+        return [SELECT Name FROM Student__c WHERE Class__r.Id = :ClassId];
+    }
+}
