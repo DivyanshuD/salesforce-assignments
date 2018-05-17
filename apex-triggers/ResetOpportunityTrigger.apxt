@@ -1,0 +1,20 @@
+trigger ResetOpportunityTrigger on Opportunity (after insert, after update) {
+    Set<Id> SetOfChangedOpporutnityId = new Set<Id>();
+    for(Opportunity opportunity: trigger.new){
+        Opportunity oldOpportunity = Trigger.oldMap.get(opportunity.Id);
+        if(oldOpportunity != null && oldOpportunity.Custom_Status__c != opportunity.Custom_Status__c && opportunity.Custom_Status__c == 'Reset'){
+            SetOfChangedOpporutnityId.add(opportunity.Id); 
+        }         
+    }
+    if(SetOfChangedOpporutnityId.size()>0){
+        List<OpportunityLineItem> ListOfOpporutnityLineItems = new List<OpportunityLineItem>();
+        for (Opportunity objOpportunity: [SELECT Id,(SELECT Id FROM OpportunityLineItems) FROM Opportunity WHERE Id IN :SetOfChangedOpporutnityId]) {
+            if (objOpportunity.OpportunityLineItems != null && objOpportunity.OpportunityLineItems.size() > 0) {
+                ListOfOpporutnityLineItems.AddAll(objOpportunity.OpportunityLineItems);
+            }
+        }
+        if (ListOfOpporutnityLineItems.size() > 0) {
+            DELETE ListOfOpporutnityLineItems;
+        }
+    }
+}
