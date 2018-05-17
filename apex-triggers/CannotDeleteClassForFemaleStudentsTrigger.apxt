@@ -1,0 +1,9 @@
+trigger CannotDeleteClassForFemaleStudentsTrigger on Class__c (before delete) {
+    List<Class__c> ListOfClasses = [SELECT Id, (SELECT Name FROM Students__r WHERE Sex__c = 'Female') FROM Class__c WHERE Id IN :Trigger.new]; 
+    for (Class__c klass: ListOfClasses){
+        if(klass.Students__r.size()>1){
+            klass.addError('Cannot Delete class as there are more than 1 Female Students in it'); 
+        }
+    }
+
+}

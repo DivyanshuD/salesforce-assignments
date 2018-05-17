@@ -1,0 +1,12 @@
+trigger PopulateCloseDateTrigger on Opportunity (before insert, before update) {
+	List<Opportunity> ListOfOpportunities = trigger.new;
+    for(Opportunity opportunity: ListOfOpportunities){
+        if(opportunity.Id != null){
+        	Opportunity oldOpportunity = Trigger.oldMap.get(opportunity.Id);
+            if(oldOpportunity != null && (oldOpportunity.StageName != 'Closed Won' || oldOpportunity.StageName != 'Closed Lost') && (opportunity.StageName == 'Closed Won' || opportunity.StageName == 'Closed Lost')){
+                 opportunity.CloseDate = Date.today();   
+            }    
+        }
+        
+    }
+}

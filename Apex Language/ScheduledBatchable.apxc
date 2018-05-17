@@ -1,6 +1,0 @@
-global class ScheduledBatchable implements Schedulable {
-  global void execute(SchedulableContext sc) {
-     SendEmailToOpptyOwner b = new SendEmailToOpptyOwner(); 
-     database.executebatch(b);
-  }
-}
