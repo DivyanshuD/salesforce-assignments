@@ -1,5 +1,0 @@
-public class objectList{
- 
-  public static List<Schema.SObjectType> getName(){
-   return Schema.getGlobalDescribe().Values();     
-}

@@ -1,0 +1,34 @@
+<apex:page controller="ManageClassController" >
+    <apex:form id="editForm">
+        <apex:pageBlock title="Classes">
+            <apex:pageBlockTable value="{!Classes}" var="klass">
+            	<apex:column value="{!klass.Name}"/>
+                <apex:column value="{!klass.Board__c}"/>
+                <apex:column value="{!klass.DetailedDescription__c}"/>
+                <apex:column >
+                    <apex:commandButton action="{!Edit}" value="Edit" reRender="editForm, EditBlock">
+                    	<apex:param name="Id" value="{!klass.Id}" assignTo="{!currentClassId}"/>
+                    </apex:commandButton>
+                </apex:column>
+                <apex:column >
+            		<apex:outputLink value="{! URLFOR($Action.Class__c.Delete, klass.Id) }">
+                		Delete
+                  </apex:outputLink>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+         <apex:pageBlock title="Edit" id="EditBlock" rendered="{!isRendered}">
+             <apex:pageBlockButtons >
+             <apex:commandButton value="Save" action="{!save}" reRender="editForm,EditBlock" />
+             <apex:commandButton value="Cancel" action="{!cancel}" reRender="editForm, EditBlock"/>
+         </apex:pageBlockButtons>
+         <apex:pageBlockSection >
+			<apex:inputField value="{!currentClass.Name}"/>
+			<apex:inputField value="{!currentClass.ClassTeacher__c}"/>
+			<apex:inputField value="{!currentClass.DetailedDescription__c}"/>
+			<apex:inputField value="{!currentClass.Board__c}"/>
+			<apex:inputField value="{!currentClass.MaxSize__c}"/>
+         </apex:pageBlockSection>
+         </apex:pageBlock>
+        </apex:form>
+</apex:page>

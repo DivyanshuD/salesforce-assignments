@@ -1,0 +1,20 @@
+<apex:page standardController="Student__c" sidebar="true">
+    <apex:form >
+        <apex:pageBlock >
+			<apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection >
+				<apex:inputField value="{!Student__c.First_Name__c}"/>
+                <apex:inputField value="{!Student__c.Last_Name__c}"/>
+                <apex:inputField value="{!Student__c.DOB__c}"/>
+                <apex:inputField value="{!Student__c.Sex__c}"/>
+                <apex:inputField value="{!Student__c.Email__c}"/>
+                <apex:inputField value="{!Student__c.Married__c}"/>
+                <apex:inputField value="{!Student__c.WifeName__c}"/>
+                <apex:inputField value="{!Student__c.Class__c}"/>
+            </apex:pageBlockSection>
+    	</apex:pageBlock>
+    </apex:form>
+</apex:page>
