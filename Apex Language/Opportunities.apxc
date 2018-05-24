@@ -1,0 +1,19 @@
+public class Opportunities {
+    public static List<Opportunity> OnUpdate(List<Opportunity> ListOfOpportunities){
+    List<Id> ListOfContactId = new List<Id>();
+    Map <Id,Account> MapOfAccounts = new Map<Id,Account>();
+        for(Opportunity opportunity: ListOfOpportunities){
+            if(opportunity.BillToContact__c != null & opportunity.Manager__c == null){ 
+                ListOfContactId.add(opportunity.BillToContact__c);
+            }
+        }
+
+        Map<Id, Contact> MapOfContactIdAndAccount = new Map<Id, Contact>([SELECT Id,Account.name FROM Contact WHERE Id IN :ListOfContactId]);
+        for(Opportunity opportunity: ListOfOpportunities){
+            if(opportunity.BillToContact__c != null & opportunity.Manager__c == null){
+                opportunity.Manager__c = MapOfContactIdAndAccount.get(opportunity.BillToContact__c).Account.Id;
+            }
+        }
+        return ListOfOpportunities;
+    }
+}

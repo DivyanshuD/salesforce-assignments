@@ -1,0 +1,23 @@
+public class AccountUtil {
+    public static void updateContactIds(Id ContactId, Id accountId){
+        Account account = [Select Id, Contact_ids__c FROM Account WHERE Id=:accountId];
+        if(account.Contact_ids__c == null){
+            List<Id> ContactIds = new List<Id>();
+            for(Contact contact: account.Contacts){
+                ContactIds.add(contact.Id);
+            }
+            ContactIds.add(ContactId);
+            account.Contact_ids__c = String.join(ContactIds, ', ');
+            update account;
+        } else {
+            Set<String> ContactIds = new Set<String>(account.Contact_ids__c.split(', '));
+            if(!ContactIds.contains(ContactId)){
+                ContactIds.add((String)ContactId);
+                account.Contact_ids__c = String.join(new List<String>(ContactIds), ', '); 
+                update account;
+            }
+        }
+        
+        System.debug(account.Contact_ids__c);
+    }
+}
