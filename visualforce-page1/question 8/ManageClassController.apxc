@@ -35,5 +35,11 @@ public class ManageClassController {
         this.currentClass=null;
     }
     
+    public void deleteRecord(){
+      List<Class__c> listOfClassesToDelete = [SELECT Id FROM Class__c WHERE Id =:System.currentPageReference().getParameters().get('Id')];
+      delete listOfClassesToDelete;  
+      this.isRendered=false;
+      this.currentClass = null;
+    }
     
 }
