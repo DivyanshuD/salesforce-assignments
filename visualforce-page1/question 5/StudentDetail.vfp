@@ -1,0 +1,12 @@
+<apex:page standardController="Student__c" extensions="StudentPDFController">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:commandButton value="Generate PDF" action="{!attachPDF}"/>
+            <apex:pageBlockSection >
+            	<apex:pageBlockSectionItem >
+                    <apex:detail />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

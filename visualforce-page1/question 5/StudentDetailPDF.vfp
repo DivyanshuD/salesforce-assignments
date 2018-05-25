@@ -1,0 +1,9 @@
+<apex:page standardController="Student__c" extensions="StudentPDFController" renderAs="pdf">
+    <apex:pageBlock >
+        <apex:pageBlockSection >
+            <apex:pageBlockSectionItem >
+                <apex:detail />
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

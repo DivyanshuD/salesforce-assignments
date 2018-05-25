@@ -1,0 +1,48 @@
+<apex:page controller="ManageClassController" id="page">
+    <script>
+    	function confirmDelete(id){
+            var response = confirm("Are you sure, you want to delete a record");
+    		if (response == true){
+            	deleteRecord(id);    
+            }
+            else{
+            	cancel();    
+            }
+         }
+    </script>
+    <apex:form id="editForm">
+        <apex:pageBlock title="Classes">
+            <apex:actionFunction name="deleteRecord" action="{!deleteRecord}" reRender="page,editForm, EditBlock">
+            	<apex:param name="Id" value=""/>
+            </apex:actionFunction>
+            <apex:actionFunction name="cancel" action="{!cancel}"/>
+            <apex:pageBlockTable value="{!Classes}" var="klass">
+            	<apex:column value="{!klass.Name}"/>
+                <apex:column value="{!klass.Board__c}"/>
+                <apex:column value="{!klass.DetailedDescription__c}"/>
+                <apex:column >
+                    <apex:commandButton action="{!Edit}" value="Edit" reRender="page, editForm, EditBlock">
+                    	<apex:param name="Id" value="{!klass.Id}" assignTo="{!currentClassId}"/>
+                    </apex:commandButton>
+                </apex:column>
+                <apex:column >
+            		 <apex:commandButton onclick="confirmDelete('{!klass.Id}');return false;" value="Delete">
+                    </apex:commandButton>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+         <apex:pageBlock title="Edit" id="EditBlock" rendered="{!isRendered}">
+             <apex:pageBlockButtons >
+             <apex:commandButton value="Save" action="{!save}" reRender="page, editForm,EditBlock" />
+             <apex:commandButton value="Cancel" action="{!cancel}" reRender="page, editForm, EditBlock"/>
+         </apex:pageBlockButtons>
+         <apex:pageBlockSection >
+			<apex:inputField value="{!currentClass.Name}"/>
+			<apex:inputField value="{!currentClass.ClassTeacher__c}"/>
+			<apex:inputField value="{!currentClass.DetailedDescription__c}"/>
+			<apex:inputField value="{!currentClass.Board__c}"/>
+			<apex:inputField value="{!currentClass.MaxSize__c}"/>
+         </apex:pageBlockSection>
+         </apex:pageBlock>
+        </apex:form>
+</apex:page>

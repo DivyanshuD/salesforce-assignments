@@ -1,0 +1,18 @@
+public class StudentPDFController{
+    private final Student__c student;
+    public StudentPDFController(ApexPages.StandardController stdController){
+        this.student = (Student__c) stdController.getRecord();
+    }
+    public PageReference attachPDF(){
+		PageReference pdf = new PageReference('/apex/StudentDetailPDF?id='+student.id);
+       	List<Attachment> Attachments = [SELECT Id, ParentId FROM Attachment WHERE ParentId = :student.Id]; 
+		Attachment attach = new Attachment(parentId = student.Id, Name = 'StudentDetail.pdf', body = pdf.getContent()); 
+        insert attach;    
+        delete Attachments;
+		PageReference pageWhereWeWantToGo = new ApexPages.StandardController(student).view();
+		pageWhereWeWantToGo.setRedirect(true);
+		return pageWhereWeWantToGo;
+    } 
+
+    
+}
