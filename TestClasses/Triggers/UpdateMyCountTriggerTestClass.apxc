@@ -1,0 +1,21 @@
+@isTest
+public class UpdateMyCountTriggerTestClass {
+  @TestSetup static void TestData(){
+        Class__c klass = new Class__c(MaxSize__c = 6);
+      	insert klass;
+    }
+    @isTest static void TestAddStudent(){
+        Id klassId = [SELECT Id FROM Class__c].get(0).Id;
+        List<Student__c> ListOfStudents = new List<Student__c>();
+        Student__c student = new Student__c(Last_Name__c = 'Demo1',Class__c = klassId);
+        ListOfStudents.add(student);
+        Student__c student1 = new Student__c(Last_Name__c = 'Demo2',Class__c = klassId);
+        ListOfStudents.add(student1);
+        Student__c student2 = new Student__c(Last_Name__c = 'Demo3',Class__c = klassId);
+        ListOfStudents.add(student2);
+        Test.startTest();
+        Database.SaveResult[] results = Database.insert(ListOfStudents, false);
+        Test.stopTest();
+        System.assertEquals(3, [SELECT Id,MyCount__c  FROM Class__c].get(0).MyCount__c);
+    }
+}
