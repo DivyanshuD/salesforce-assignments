@@ -1,4 +1,4 @@
-trigger ResetOpportunityTrigger on Opportunity (after insert, after update) {
+trigger ResetOpportunityTrigger on Opportunity (after update) {
     Set<Id> SetOfChangedOpporutnityId = new Set<Id>();
     for(Opportunity opportunity: trigger.new){
         Opportunity oldOpportunity = Trigger.oldMap.get(opportunity.Id);
