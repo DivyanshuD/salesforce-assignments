@@ -1,0 +1,80 @@
+@isTest 
+public class OrderProductsTestClass {
+    
+  	 @isTest static void testProductList(){
+        Product2 product = new Product2();
+        product.Description = 'Description';
+       	product.Name = 'Sample Product 1';
+        product.Price__c = 20; 
+        INSERT product; 
+        ProductPurchaseController ppc = new ProductPurchaseController();
+        System.assertEquals(ppc.productList[0].Id, product.Id);
+    }
+    
+    @isTest static void testAddToCart(){
+        Product2 product = new Product2();
+        product.Description = 'Description';
+       	product.Name = 'Sample Product 1';
+        product.Price__c = 20; 
+        INSERT product; 
+        PurchaseOrder__c BuyedOrder = new PurchaseOrder__c();
+        BuyedOrder.Name__c='New Order';
+        BuyedOrder.Order_Status__c = true;
+        INSERT BuyedOrder;
+        PurchaseOrderLineItem__c lineItem = new PurchaseOrderLineItem__c();
+        lineItem.Product__c=product.Id;
+        lineItem.OrderId__c=BuyedOrder.Id;
+        lineItem.Quantity__c =1;
+        insert lineItem;
+        ProductPurchaseController ppc = new ProductPurchaseController();
+        ppc.productId = Product.Id;
+        ppc.addToCart();
+        System.assertEquals(ppc.ListOfOrder[0].Id,BuyedOrder.Id);
+    }
+    
+    @isTest static void testRemoveFromCart(){
+        Product2 product = new Product2();
+        product.Description = 'Description';
+       	product.Name = 'Sample Product 1';
+        product.Price__c = 20; 
+        INSERT product; 
+        ProductPurchaseController ppc = new ProductPurchaseController();
+        ppc.productId = product.Id;
+        ppc.addToCart();
+        ppc.productId = ppc.productsToPurchase[0].Id;
+        Id lineItemId = ppc.productsToPurchase[0].Id;
+        ppc.removeFromCart();
+        System.debug('Ids11111'+ppc.productsToPurchaseItem);
+        System.assertNotEquals(ppc.productsToPurchaseItem.contains(lineItemId),true);
+    }
+    
+     @isTest static void testPay(){
+        Product2 product = new Product2();
+        product.Description = 'Description';
+       	product.Name = 'Sample Product 1';
+        product.Price__c = 20; 
+        INSERT product; 
+        ProductPurchaseController ppc = new ProductPurchaseController();
+        ppc.productId = product.Id;
+        ppc.addToCart();
+        ppc.addToCart();
+        ppc.pay();
+        System.assertEquals(true, ppc.informationDisplayPopUp);
+        System.assertEquals(ppc.productsToPurchase[0].Quantity__c, 2);
+    }
+    
+    @isTest static void testConfirm(){
+        Product2 product = new Product2();
+        product.Description = 'Description';
+       	product.Name = 'Sample Product 1';
+        product.Price__c = 20; 
+        INSERT product; 
+        ProductPurchaseController ppc = new ProductPurchaseController();
+        ppc.productId = product.Id;
+        ppc.addToCart();
+        ppc.pay();
+        ppc.confirm();
+        System.assertEquals(ppc.order.Order_Status__c,true);
+    }
+    
+}

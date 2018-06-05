@@ -1,0 +1,28 @@
+@isTest
+public class ResetOpportunityTriggerTestClass {
+    @TestSetup static void TestData(){
+	for(Integer o=0; o<2; o++) {
+        Opportunity opp = new Opportunity(Name = 'UoW Test Name ' + o,StageName = 'Open',CloseDate = System.today());
+        insert opp;
+        for(Integer i=0; i<2; i++) {
+          Product2 product = new Product2(Name = opp.Name + ' : Product : ' + i,Price__c = 10);
+          insert product;
+          PricebookEntry pbe = new PricebookEntry(UnitPrice = 10,IsActive = true,UseStandardPrice = false,Pricebook2Id = Test.getStandardPricebookId(),Product2Id=product.Id);
+          insert pbe;
+          OpportunityLineItem oppLineItem = new OpportunityLineItem(Quantity = 1,TotalPrice = 10,PricebookEntryId = pbe.Id,OpportunityId=opp.Id);
+          insert oppLineItem;
+            }
+        }
+    }
+    @isTest static void TestResetOpportunity(){
+        List<Opportunity> ListOfOpportunities = [SELECT Id,Custom_Status__c FROM Opportunity];
+        ListOfOpportunities.get(0).Custom_Status__c = 'Reset';
+        Id oppId =ListOfOpportunities.get(0).Id;
+        Id oppId2 =ListOfOpportunities.get(1).Id;
+        Test.startTest();
+        Database.SaveResult[] results = Database.update(ListOfOpportunities, false);
+        Test.stopTest();
+        System.assertEquals(0, [SELECT Id,OpportunityId FROM OpportunityLineItem WHERE OpportunityId = :oppId].size());
+        System.assertEquals(2, [SELECT Id,OpportunityId FROM OpportunityLineItem WHERE OpportunityId = :oppId2].size());
+    }
+}

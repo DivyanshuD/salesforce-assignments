@@ -1,0 +1,14 @@
+@isTest
+public class PopulateCloseDateTriggerTestClass {
+      @IsTest static void TestPopulateCloseDate(){
+        Opportunity opp = new Opportunity(Name = 'Demo',StageName = 'New',CloseDate = Date.newInstance(2108,5, 1));
+        insert opp;
+        opp.StageName = 'Closed Won';
+        Test.startTest();
+        Database.SaveResult result = Database.update(opp, false);
+        Test.stopTest();
+        System.assert(result.isSuccess());
+        System.assertEquals(Date.today(),[SELECT Id, CloseDate FROM Opportunity].get(0).CloseDate);
+    }
+
+}
