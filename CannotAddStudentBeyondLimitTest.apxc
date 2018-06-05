@@ -1,0 +1,31 @@
+@IsTest
+public class CannotAddStudentBeyondLimitTest {
+    @TestSetup static void TestData(){
+        Class__c klass = new Class__c(MaxSize__c = 2);
+		insert klass;
+    }
+    @IsTest static void TestAddStudent(){
+        Id klassId = [SELECT Id FROM Class__c].get(0).Id;
+        List<Student__c> ListOfStudents = new List<Student__c>();
+        
+        Student__c student1 = new Student__c(Last_Name__c = 'Demo1',Class__c = klassId);
+        ListOfStudents.add(student1);
+        
+        Student__c student2 = new Student__c(Last_Name__c = 'Demo2',Class__c = klassId);
+        ListOfStudents.add(student2);
+        
+        Student__c student3 = new Student__c(Last_Name__c = 'Demo3',Class__c = klassId);
+        ListOfStudents.add(student3);
+        
+        Test.startTest();
+        Database.SaveResult[] results = Database.insert(ListOfStudents, false);
+        Test.stopTest();
+        
+        System.assert(results[0].isSuccess());
+        System.assert(results[1].isSuccess());
+        System.assert(!results[2].isSuccess());
+        System.assert(results[2].getErrors().size() > 0);
+        System.assertEquals('Class have reached Max limit',
+                             results[2].getErrors()[0].getMessage());
+    }
+}

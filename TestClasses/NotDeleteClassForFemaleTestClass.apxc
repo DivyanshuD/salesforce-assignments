@@ -1,0 +1,46 @@
+@IsTest
+public class CannotDeleteClassForFemaleStudentsTest {
+    @TestSetup static void TestData(){
+        List<Class__c> ListOfClasses = new List<Class__c>();
+        List<Student__c> ListOfStudents = new List<Student__c>();
+        
+        Class__c klass = new Class__c(Name = 'Test');
+        ListOfClasses.add(klass);
+        Class__c klass2 = new Class__c(Name = 'Test 2');
+        ListOfClasses.add(klass2);
+        insert ListOfClasses;
+        
+        Student__c student = new Student__c(Last_Name__c = 'Demo',Sex__c = 'Female',Class__c = klass.Id);
+        ListOfStudents.add(student);
+        
+        Student__c student1 = new Student__c(Last_Name__c = 'Demo',Sex__c = 'Female',Class__c = klass2.Id);
+        ListOfStudents.add(student1);
+        
+        Student__c student2 = new Student__c(Last_Name__c = 'Demo 2',Sex__c = 'Female',Class__c = klass.Id);
+		ListOfStudents.add(student2);
+        
+		Student__c student3 = new Student__c(Last_Name__c = 'Demo',Sex__c = 'Male',Class__c = klass2.Id);
+        ListOfStudents.add(student3);
+       	
+        insert ListOfStudents;
+    }
+    @IsTest static void CannotDeleteClassForFemaleStudentTest(){
+        Class__c klass = [SELECT Id, Name FROM Class__c WHERE Name = 'Test'].get(0);
+        
+        Test.startTest();
+        Database.DeleteResult result = Database.delete(klass, false);
+        Test.stopTest();
+        System.assert(!result.isSuccess());
+        System.assert(result.getErrors().size() > 0);
+        System.assertEquals('Cannot Delete class as there are more than 1 Female Students in it',
+                             result.getErrors()[0].getMessage());
+    }
+    @IsTest static void CannotDeleteClassForFemaleStudentTestNegative(){
+        Class__c klass = [SELECT Id, Name FROM Class__c WHERE Name = 'Test 2'].get(0);
+        System.debug(klass);
+        Test.startTest();
+        Database.DeleteResult result = Database.delete(klass, false);
+        Test.stopTest();
+        System.assert(result.isSuccess());
+    }
+}
