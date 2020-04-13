@@ -1,0 +1,23 @@
+trigger CannotAddStudentBeyondLimitInClassTrigger on Student__c (before insert) {
+   Set<Id> studentIds= new Set<Id>();
+   List<Student__c> ListOfStudents = trigger.new;
+   
+   Set<Id> classIds = new Set<Id>();
+   for(Student__c student: ListOfStudents) {
+       classIds.add(student.Class__c);
+   }
+   Map<Id, Class__c> MapOfClasses = new Map<Id, Class__c>([SELECT NumberOfStudents__c,MaxSize__c FROM Class__c WHERE Id IN :classIds]);
+   Map<Id, Integer> studentCountMap = new Map<Id, Integer>();
+   for(Student__c student : ListOfStudents){    
+       Class__c classObject = MapOfClasses.get(student.Class__c);
+       if(studentCountMap.get(classObject.id) == null){
+           studentCountMap.put(classObject.id,0);
+       }
+       
+       if (classObject.MaxSize__c != null && classObject.MaxSize__c < classObject.NumberOfStudents__c+studentCountMap.get(classObject.id)) {
+           student.adderror('Class have reached Max limit');
+       } else {
+           studentCountMap.put(classObject.id,studentCountMap.get(classObject.id)+1);
+       }
+    }
+}

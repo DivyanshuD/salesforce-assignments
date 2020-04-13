@@ -1,0 +1,13 @@
+trigger UpdateMyCountTrigger on Student__c (after insert,after update) {
+    Set<Id> classIds = new Set<Id>();
+    List <Class__c>ListOfClass = new List<Class__c>();
+    for (Student__c student : Trigger.new){
+        classIds.add(student.Class__c);
+    }
+
+    for (Class__c klass : [SELECT MyCount__c,NumberOfStudents__c FROM Class__c WHERE Id IN :classIds]){
+      klass.MyCount__c = klass.NumberOfStudents__c;
+      ListOfClass.add(klass);
+    }
+    update ListOfClass;
+}
